@@ -1,47 +1,58 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
+<script setup></script>
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
   <main>
-    <TheWelcome />
+    <div class="img__container">
+      <img :src="catSrc" alt="品種" />
+    </div>
+    <div class="button__container">
+      <button @click="reShake()">GO</button>
+    </div>
   </main>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
+<script>
+export default {
+  data() {
+    return {
+      catNum: 0,
+      timeOut: 17,
+      timer: null,
+    };
+  },
+  methods: {
+    shake() {
+      console.log(this.catNum, this.timeOut);
+      if (this.timeOut < 600) {
+        this.getRandom(1, 5);
+        this.timeOut *= 1.2;
+        this.timer = setTimeout(this.shake, this.timeOut);
+      } else {
+        clearTimeout(this.timer);
+      }
+    },
+    reShake() {
+      this.timeOut = 17;
+      this.shake();
+    },
+    getRandom(min, max) {
+      this.catNum = Math.round(min + Math.random() * (max - min));
+    },
+  },
+  computed: {
+    catSrc() {
+      return new URL(`./assets/img/breed_${this.catNum}_b.png`, import.meta.url)
+        .href;
+    },
+  },
+  mounted() {
+    this.shake();
+  },
+};
+</script>
+<style scoped lang="scss">
+.img__container {
+  text-align: center;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.button__container {
+  text-align: center;
 }
 </style>
